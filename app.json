@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "Mess Update",
+    "slug": "mess-update",
+    "scheme": "messupdate",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1B5E20"
+    },
+    "android": {
+      "package": "com.kennynauna.messupdate",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1B5E20"
+      },
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Mess Update uses your location to show how far you are from the mess."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#1B5E20"
+        }
+      ]
+    ]
+  }
+}
