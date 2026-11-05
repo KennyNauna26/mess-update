@@ -39,6 +39,13 @@
           "color": "#1B5E20"
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "619a0d7e-f2ea-4a46-a9fc-a9dbec0d0eae"
+      }
+    },
+    "owner": "kennynauna"
   }
 }
