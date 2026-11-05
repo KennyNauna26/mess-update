@@ -21,10 +21,18 @@ export default function FeedbackDetailScreen() {
 
   if (feedback.isPending) return <LoadingState />;
   if (feedback.isError) {
-    return <ErrorState message={toFriendlyMessage(feedback.error)} onRetry={() => feedback.refetch()} />;
+    return (
+      <ErrorState message={toFriendlyMessage(feedback.error)} onRetry={() => feedback.refetch()} />
+    );
   }
   if (!feedback.data) {
-    return <EmptyState icon="chatbubbles-outline" title="Feedback not found" message="It may have been deleted." />;
+    return (
+      <EmptyState
+        icon="chatbubbles-outline"
+        title="Feedback not found"
+        message="It may have been deleted."
+      />
+    );
   }
 
   const item = feedback.data;

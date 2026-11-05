@@ -83,16 +83,23 @@ export default function MapScreen() {
             <View style={styles.notice}>
               <Ionicons name="location-outline" size={18} color={colors.warning} />
               <Text style={[typography.caption, styles.noticeText]}>
-                Location is off, so we can't show how far you are. You can still see the mess on the map.
+                Location is off, so we can't show how far you are. You can still see the mess on the
+                map.
               </Text>
             </View>
           ) : null}
           {userLocation.status === 'error' ? (
-            <Text style={[typography.caption, { color: colors.danger }]}>{userLocation.message}</Text>
+            <Text style={[typography.caption, { color: colors.danger }]}>
+              {userLocation.message}
+            </Text>
           ) : null}
 
           {userLocation.status === 'denied' ? (
-            <AppButton title="Allow location in Settings" variant="secondary" onPress={() => Linking.openSettings()} />
+            <AppButton
+              title="Allow location in Settings"
+              variant="secondary"
+              onPress={() => Linking.openSettings()}
+            />
           ) : null}
           {userLocation.status === 'error' ? (
             <AppButton title="Retry location" variant="secondary" onPress={retry} />

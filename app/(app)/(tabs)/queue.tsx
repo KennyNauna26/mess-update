@@ -30,7 +30,11 @@ export default function QueueScreen() {
   if (latest.isError) {
     return (
       <Screen scroll={false}>
-        <ErrorState message={toFriendlyMessage(latest.error)} onRetry={refresh} retrying={latest.isRefetching} />
+        <ErrorState
+          message={toFriendlyMessage(latest.error)}
+          onRetry={refresh}
+          retrying={latest.isRefetching}
+        />
       </Screen>
     );
   }

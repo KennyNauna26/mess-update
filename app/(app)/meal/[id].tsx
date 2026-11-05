@@ -51,7 +51,10 @@ export default function MealDetailsScreen() {
       </View>
 
       <Card>
-        <DetailRow label="Serving time" value={`${formatTime(data.serving_start)} – ${formatTime(data.serving_end)}`} />
+        <DetailRow
+          label="Serving time"
+          value={`${formatTime(data.serving_start)} – ${formatTime(data.serving_end)}`}
+        />
         <DetailRow label="Side dish" value={data.side_dish} />
         <DetailRow label="Drink" value={data.drink} />
         <DetailRow label="About this meal" value={data.description} />
@@ -61,9 +64,15 @@ export default function MealDetailsScreen() {
       {myFeedback.isPending ? (
         <LoadingState />
       ) : myFeedback.isError ? (
-        <ErrorState message={toFriendlyMessage(myFeedback.error)} onRetry={() => myFeedback.refetch()} />
+        <ErrorState
+          message={toFriendlyMessage(myFeedback.error)}
+          onRetry={() => myFeedback.refetch()}
+        />
       ) : existing ? (
-        <Card onPress={() => router.push(`/feedback/${existing.id}`)} accessibilityLabel="Open your feedback">
+        <Card
+          onPress={() => router.push(`/feedback/${existing.id}`)}
+          accessibilityLabel="Open your feedback"
+        >
           <RatingStars value={existing.rating} />
           {existing.comment ? <Text style={typography.body}>{existing.comment}</Text> : null}
           <Text style={typography.caption}>Tap to view, edit or delete</Text>
