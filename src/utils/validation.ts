@@ -40,7 +40,8 @@ export const resetPasswordSchema = z
     code: z
       .string()
       .trim()
-      .regex(/^\d{6}$/, 'Enter the 6-digit code from the email'),
+      // Supabase's code length is a project setting (6–8 digits), so accept the whole range.
+      .regex(/^\d{6,8}$/, 'Enter the code from the email (6–8 digits)'),
     password: newPassword,
     confirmPassword: z.string().min(1, 'Confirm your new password'),
   })
