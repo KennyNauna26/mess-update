@@ -25,7 +25,13 @@ interface EmptyStateProps {
   onAction?: () => void;
 }
 
-export function EmptyState({ icon = 'restaurant-outline', title, message, actionLabel, onAction }: EmptyStateProps) {
+export function EmptyState({
+  icon = 'restaurant-outline',
+  title,
+  message,
+  actionLabel,
+  onAction,
+}: EmptyStateProps) {
   return (
     <View style={styles.center}>
       <Ionicons name={icon} size={40} color={colors.textMuted} />

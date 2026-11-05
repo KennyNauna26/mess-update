@@ -63,7 +63,9 @@ export default function FeedbackFormScreen() {
 
   if (isEdit && existing.isPending) return <LoadingState />;
   if (isEdit && existing.isError) {
-    return <ErrorState message={toFriendlyMessage(existing.error)} onRetry={() => existing.refetch()} />;
+    return (
+      <ErrorState message={toFriendlyMessage(existing.error)} onRetry={() => existing.refetch()} />
+    );
   }
   if (!mealId) {
     return <ErrorState message="No meal was selected. Go back and choose a meal first." />;

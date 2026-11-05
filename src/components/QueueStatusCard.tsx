@@ -13,7 +13,13 @@ import {
 import { Card } from './Card';
 import { FormMessage } from './StateViews';
 
-export function QueueStatusCard({ report, onPress }: { report: QueueReport; onPress?: () => void }) {
+export function QueueStatusCard({
+  report,
+  onPress,
+}: {
+  report: QueueReport;
+  onPress?: () => void;
+}) {
   const level = queueLevelLabel[report.status];
   const isStale = minutesSince(report.reported_at) > QUEUE_STALE_MINUTES;
 
@@ -28,10 +34,7 @@ export function QueueStatusCard({ report, onPress }: { report: QueueReport; onPr
       {report.note ? <Text style={typography.body}>{report.note}</Text> : null}
       <Text style={typography.caption}>Updated {timeAgo(report.reported_at)}</Text>
       {isStale ? (
-        <FormMessage
-          tone="danger"
-          message="This report is over an hour old and may be outdated."
-        />
+        <FormMessage tone="danger" message="This report is over an hour old and may be outdated." />
       ) : null}
     </Card>
   );

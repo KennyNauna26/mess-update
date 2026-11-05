@@ -84,7 +84,12 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  brand: { alignItems: 'center', gap: spacing.sm, marginTop: spacing.xxl, marginBottom: spacing.lg },
+  brand: {
+    alignItems: 'center',
+    gap: spacing.sm,
+    marginTop: spacing.xxl,
+    marginBottom: spacing.lg,
+  },
   logo: {
     width: 80,
     height: 80,

@@ -12,7 +12,10 @@ export function MealCard({ meal, onPress }: { meal: Meal; onPress?: () => void }
   const sides = [meal.side_dish, meal.drink].filter(Boolean).join(' · ');
 
   return (
-    <Card onPress={onPress} accessibilityLabel={`${mealTypeLabel[meal.meal_type]}: ${meal.main_dish}`}>
+    <Card
+      onPress={onPress}
+      accessibilityLabel={`${mealTypeLabel[meal.meal_type]}: ${meal.main_dish}`}
+    >
       <View style={styles.headerRow}>
         <Text style={styles.type}>{mealTypeLabel[meal.meal_type]}</Text>
         <StatusBadge label={status.label} tone={status.tone} />
@@ -33,7 +36,12 @@ export function MealCard({ meal, onPress }: { meal: Meal; onPress?: () => void }
 }
 
 const styles = StyleSheet.create({
-  headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: spacing.sm },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
   type: { ...typography.label, color: colors.primary },
   sides: { ...typography.body, color: colors.textMuted },
 });

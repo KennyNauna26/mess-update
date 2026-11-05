@@ -16,7 +16,13 @@ export default function MenuScreen() {
   if (meals.isPending) {
     body = <LoadingState message="Loading today's menu…" />;
   } else if (meals.isError) {
-    body = <ErrorState message={toFriendlyMessage(meals.error)} onRetry={() => meals.refetch()} retrying={meals.isRefetching} />;
+    body = (
+      <ErrorState
+        message={toFriendlyMessage(meals.error)}
+        onRetry={() => meals.refetch()}
+        retrying={meals.isRefetching}
+      />
+    );
   } else {
     body = (
       <FlatList

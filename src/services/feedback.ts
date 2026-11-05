@@ -16,7 +16,11 @@ export async function listMyFeedback(): Promise<FeedbackWithMeal[]> {
 }
 
 export async function getFeedback(id: string): Promise<FeedbackWithMeal | null> {
-  const { data, error } = await supabase.from('feedback').select(WITH_MEAL).eq('id', id).maybeSingle();
+  const { data, error } = await supabase
+    .from('feedback')
+    .select(WITH_MEAL)
+    .eq('id', id)
+    .maybeSingle();
   if (error) throw error;
   return data as FeedbackWithMeal | null;
 }

@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
+import { withOfflineCache } from '@/lib/offlineCache';
 import { queryKeys } from '@/lib/queryClient';
 import { getLatestQueue, getQueueHistorySince } from '@/services/queue';
 import { localDateISO, startOfTodayISO } from '@/utils/format';
@@ -10,15 +11,19 @@ const QUEUE_REFRESH_MS = 60 * 1000;
 export function useLatestQueue() {
   return useQuery({
     queryKey: queryKeys.latestQueue,
-    queryFn: getLatestQueue,
+    queryFn: () => withOfflineCache('queue:latest', getLatestQueue),
     refetchInterval: QUEUE_REFRESH_MS,
+    networkMode: 'offlineFirst',
   });
 }
 
 export function useQueueHistoryToday() {
+  const today = localDateISO();
   return useQuery({
-    queryKey: queryKeys.queueHistory(localDateISO()),
-    queryFn: () => getQueueHistorySince(startOfTodayISO()),
+    queryKey: queryKeys.queueHistory(today),
+    queryFn: () =>
+      withOfflineCache(`queue:history:${today}`, () => getQueueHistorySince(startOfTodayISO())),
     refetchInterval: QUEUE_REFRESH_MS,
+    networkMode: 'offlineFirst',
   });
 }

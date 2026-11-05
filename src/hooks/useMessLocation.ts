@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useState } from 'react';
 
+import { withOfflineCache } from '@/lib/offlineCache';
 import { queryKeys } from '@/lib/queryClient';
 import {
   getCurrentCoordinates,
@@ -13,8 +14,9 @@ import { toFriendlyMessage } from '@/utils/errors';
 export function useMessLocations() {
   return useQuery({
     queryKey: queryKeys.messLocations,
-    queryFn: getMessLocations,
+    queryFn: () => withOfflineCache('mess-locations', getMessLocations),
     staleTime: 24 * 60 * 60 * 1000, // the mess does not move
+    networkMode: 'offlineFirst',
   });
 }
 

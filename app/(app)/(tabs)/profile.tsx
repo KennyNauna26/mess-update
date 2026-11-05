@@ -8,6 +8,7 @@ import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import { AppButton } from '@/components/AppButton';
 import { Card } from '@/components/Card';
 import { Screen } from '@/components/Screen';
+import { MealRemindersCard } from '@/components/MealRemindersCard';
 import { FormMessage } from '@/components/StateViews';
 import { useAuth } from '@/context/AuthContext';
 import { useProfile } from '@/hooks/useProfile';
@@ -80,15 +81,15 @@ export default function ProfileScreen() {
       {error ? <FormMessage tone="danger" message={error} /> : null}
 
       <Card style={styles.menuCard}>
-        <MenuRow icon="chatbubbles-outline" label="My feedback" onPress={() => router.push('/feedback')} />
+        <MenuRow
+          icon="chatbubbles-outline"
+          label="My feedback"
+          onPress={() => router.push('/feedback')}
+        />
       </Card>
 
       <Text style={typography.heading}>Meal reminders</Text>
-      <Card>
-        <Text style={typography.body}>
-          Reminders before breakfast, lunch and dinner are coming in milestone M4.
-        </Text>
-      </Card>
+      <MealRemindersCard />
 
       <AppButton title="Log out" variant="danger" onPress={confirmSignOut} loading={isSigningOut} />
     </Screen>
