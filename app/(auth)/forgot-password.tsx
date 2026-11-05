@@ -21,7 +21,7 @@ import {
 
 /**
  * Two steps, all inside the app:
- * 1. email → Supabase sends a 6-digit recovery code
+ * 1. email → Supabase sends a 6–8 digit recovery code
  * 2. code + new password → verify the code, then save the password
  */
 export default function ForgotPasswordScreen() {
@@ -76,7 +76,7 @@ export default function ForgotPasswordScreen() {
         <Text style={styles.title}>Reset password</Text>
         <Text style={styles.subtitle}>
           {email
-            ? `Enter the 6-digit code we sent to ${email} and choose a new password.`
+            ? `Enter the code we sent to ${email} and choose a new password.`
             : 'Enter your account email and we will send you a reset code.'}
         </Text>
       </View>
@@ -90,9 +90,9 @@ export default function ForgotPasswordScreen() {
               control={resetForm.control}
               name="code"
               label="Reset code"
-              placeholder="123456"
+              placeholder="12345678"
               keyboardType="number-pad"
-              maxLength={6}
+              maxLength={8}
               autoComplete="one-time-code"
               textContentType="oneTimeCode"
             />
