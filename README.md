@@ -118,7 +118,6 @@ _Screenshots from a real device are added in `docs/screenshots/`._
 
 - Queue status is reported by the mess admin; the app does not count people. Every report shows when it was made, and reports older than an hour are flagged.
 - Admins use the Supabase dashboard; there are no in-app admin screens in v1.
-- The mess coordinates in `seed.sql` are approximate and must be replaced with the real location.
 - The Supabase free plan pauses a project after 7 days without activity. If the app shows a connection error, resume the project in the Supabase dashboard.
 - The Google Maps key is supplied only through EAS environment variables. Without it, the map can render blank, but the distance and the mess details still show.
 - Offline mode is read-only. Menus, the queue and the mess location come from the last successful load, and creating or editing feedback needs a connection.

@@ -9,11 +9,15 @@ create temporary table seed_clock as
 select (now() at time zone 'Pacific/Port_Moresby')::date as today,
        (now() at time zone 'Pacific/Port_Moresby')::time as time_now;
 
--- TODO before submission: replace with the real mess coordinates (long-press the spot
--- in Google Maps to copy them). These are approximate PNG Unitech, Lae campus values.
+-- Unitech Mess (dining hall), PNG University of Technology, Lae — from Google Maps.
 insert into public.mess_locations (name, latitude, longitude)
-select 'Main Mess', -6.6703, 146.9917
+select 'Main Mess', -6.67421, 146.99226
 where not exists (select 1 from public.mess_locations where name = 'Main Mess');
+
+-- Moves the pin if an older run saved approximate coordinates.
+update public.mess_locations
+set latitude = -6.67421, longitude = 146.99226
+where name = 'Main Mess';
 
 -- ---------------------------------------------------------------------------
 -- Weekly meal plan (Monday = 1 … Sunday = 7), rotating the mess's real menu.
