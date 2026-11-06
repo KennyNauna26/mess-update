@@ -1,6 +1,13 @@
 -- Mess Update — sample data so the app is never empty for a marker.
 -- Run AFTER schema.sql, in the SQL Editor (it runs as the owner, so RLS does not block it).
--- Re-running is safe: it clears and re-creates today's sample meals and queue reports.
+-- Re-running is safe: it re-creates the next 7 days of meals and today's queue reports.
+-- WARNING: re-running deletes feedback attached to the meals it replaces.
+
+-- Dates and times follow the campus time zone, not the server's (UTC), so "today" in the
+-- app matches "today" here.
+create temporary table seed_clock as
+select (now() at time zone 'Pacific/Port_Moresby')::date as today,
+       (now() at time zone 'Pacific/Port_Moresby')::time as time_now;
 
 -- TODO before submission: replace with the real mess coordinates (long-press the spot
 -- in Google Maps to copy them). These are approximate PNG Unitech, Lae campus values.
@@ -8,25 +15,68 @@ insert into public.mess_locations (name, latitude, longitude)
 select 'Main Mess', -6.6703, 146.9917
 where not exists (select 1 from public.mess_locations where name = 'Main Mess');
 
--- Meals for today and the next 6 days.
-delete from public.meals where meal_date between current_date and current_date + 6;
+-- ---------------------------------------------------------------------------
+-- Weekly meal plan (Monday = 1 … Sunday = 7), rotating the mess's real menu.
+-- Milo or coffee every breakfast, cordial every lunch, tea every dinner.
+-- ---------------------------------------------------------------------------
+create temporary table weekly_menu (
+  day_of_week int, meal_type text, main_dish text, side_dish text, drink text, description text
+);
+
+insert into weekly_menu values
+  -- Breakfast
+  (1, 'breakfast', 'Scrambled eggs', 'Bread with peanut butter', 'Milo or coffee', 'Scrambled eggs served with bread and peanut butter.'),
+  (2, 'breakfast', 'Boiled eggs',    'Bread and butter',         'Milo or coffee', 'Boiled eggs served with buttered bread.'),
+  (3, 'breakfast', 'Baked beans',    'Bread and butter',         'Milo or coffee', 'Baked beans served with buttered bread.'),
+  (4, 'breakfast', 'Sausages',       'Bread and jam',            'Milo or coffee', 'Sausages served with bread and jam.'),
+  (5, 'breakfast', 'Scrambled eggs', 'Bread with peanut butter', 'Milo or coffee', 'Scrambled eggs served with bread and peanut butter.'),
+  (6, 'breakfast', 'Baked beans',    'Bread and butter',         'Milo or coffee', 'Baked beans served with buttered bread.'),
+  (7, 'breakfast', 'Boiled eggs',    'Bread and butter',         'Milo or coffee', 'Boiled eggs served with buttered bread.'),
+  -- Lunch
+  (1, 'lunch', 'Mince meat',     'Rice and vegetables', 'Cordial', 'Mince meat served with rice and vegetables.'),
+  (2, 'lunch', 'Sausage stew',   'Rice and vegetables', 'Cordial', 'Sausage stew served with rice and vegetables.'),
+  (3, 'lunch', 'Besta tinfish',  'Rice and vegetables', 'Cordial', 'Besta tinfish served with rice and vegetables.'),
+  (4, 'lunch', 'Mince meat',     'Rice and vegetables', 'Cordial', 'Mince meat served with rice and vegetables.'),
+  (5, 'lunch', 'Sausage stew',   'Rice and vegetables', 'Cordial', 'Sausage stew served with rice and vegetables.'),
+  (6, 'lunch', 'Besta tinfish',  'Rice and vegetables', 'Cordial', 'Besta tinfish served with rice and vegetables.'),
+  (7, 'lunch', 'Mince meat',     'Rice and vegetables', 'Cordial', 'Mince meat served with rice and vegetables.'),
+  -- Dinner
+  (1, 'dinner', 'Boiled chicken', 'Sweet potato and vegetables',        'Tea', 'Boiled chicken served with sweet potato and vegetables.'),
+  (2, 'dinner', 'Fish fillet',    'Side salad',                         'Tea', 'Fish fillet served with a side salad.'),
+  (3, 'dinner', 'Beef stew',      'Rice and vegetables',                'Tea', 'Beef stew served with rice and vegetables.'),
+  (4, 'dinner', 'Globe',          'Stir-fry noodles and vegetables',    'Tea', 'Globe served with stir-fry noodles and vegetables.'),
+  (5, 'dinner', 'Fish fillet',    'Side salad',                         'Tea', 'Fish fillet served with a side salad.'),
+  (6, 'dinner', 'Boiled chicken', 'Sweet potato and vegetables',        'Tea', 'Boiled chicken served with sweet potato and vegetables.'),
+  (7, 'dinner', 'Beef stew',      'Rice and vegetables',                'Tea', 'Beef stew served with rice and vegetables.');
+
+-- Serving times for each meal.
+create temporary table serving_times (meal_type text, serving_start time, serving_end time);
+insert into serving_times values
+  ('breakfast', '06:30', '08:30'),
+  ('lunch',     '11:30', '13:30'),
+  ('dinner',    '17:30', '19:30');
+
+-- Replace the meals for today and the next 6 days.
+delete from public.meals
+where meal_date between (select today from seed_clock) and (select today from seed_clock) + 6;
 
 insert into public.meals (meal_date, meal_type, main_dish, side_dish, drink, description, status, serving_start, serving_end)
-select d::date, m.meal_type, m.main_dish, m.side_dish, m.drink, m.description,
-       case when d::date = current_date then m.today_status else 'upcoming' end,
-       m.serving_start, m.serving_end
-from generate_series(current_date, current_date + 6, interval '1 day') as d
-cross join (values
-  ('breakfast', 'Scrambled eggs',  'Bread and banana', 'Tea or coffee',
-   'Eggs with toasted bread and fresh banana.', 'finished', time '06:30', time '08:30'),
-  ('lunch',     'Chicken curry',   'Rice and mixed vegetables', 'Orange juice',
-   'Mild chicken curry with steamed rice.', 'serving', time '11:30', time '13:30'),
-  ('dinner',    'Fried rice',      'Kaukau and greens', 'Water',
-   'Vegetable fried rice with kaukau and greens.', 'upcoming', time '17:30', time '19:30')
-) as m(meal_type, main_dish, side_dish, drink, description, today_status, serving_start, serving_end);
+select d::date, w.meal_type, w.main_dish, w.side_dish, w.drink, w.description,
+       -- Today's status follows the current campus time; later days are upcoming.
+       case
+         when d::date > c.today then 'upcoming'
+         when c.time_now >= t.serving_end then 'finished'
+         when c.time_now >= t.serving_start then 'serving'
+         else 'upcoming'
+       end,
+       t.serving_start, t.serving_end
+from seed_clock c
+cross join generate_series(c.today, c.today + 6, interval '1 day') as d
+join weekly_menu w on w.day_of_week = extract(isodow from d)::int
+join serving_times t on t.meal_type = w.meal_type;
 
 -- Today's queue reports (newest is the current status).
-delete from public.queue_status where reported_at >= current_date;
+delete from public.queue_status where reported_at >= now() - interval '24 hours';
 
 insert into public.queue_status (location_id, status, wait_min, wait_max, note, reported_at, updated_by)
 select l.id, q.status, q.wait_min, q.wait_max, q.note, now() - q.ago, null
@@ -39,6 +89,8 @@ cross join (values
   ('busy',     25, 35, 'Breakfast rush',                 interval '5 hours')
 ) as q(status, wait_min, wait_max, note, ago)
 where l.name = 'Main Mess';
+
+drop table seed_clock, weekly_menu, serving_times;
 
 -- Make your own account an admin (run once, with your email):
 -- update public.profiles set role = 'admin'
