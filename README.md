@@ -4,7 +4,8 @@
 
 Mess Update is an Android app for university students. It shows the campus mess's daily menu, the current queue status with an estimated wait, and where the mess is on a map, so students can decide when to go before they walk there. Students can rate meals and manage their own feedback, and they can turn on daily meal-time reminders. Menus and the queue stay readable offline from the last successful load.
 
-- **Student:** Kenny Nauna — _student number: [add]_
+- **Student:** Kenny Nauna — student number 24202171
+- **Test account:** the login for marking is given in the technical report.
 - **Unit:** IS325 Mobile App Development, PNG University of Technology
 
 ## Tech stack
