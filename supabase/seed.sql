@@ -75,20 +75,30 @@ cross join generate_series(c.today, c.today + 6, interval '1 day') as d
 join weekly_menu w on w.day_of_week = extract(isodow from d)::int
 join serving_times t on t.meal_type = w.meal_type;
 
--- Today's queue reports (newest is the current status).
+-- Today's queue reports at realistic times around each meal (newest is the current
+-- status). Only reports whose time has already passed today are added, so running this
+-- at night shows tonight's dinner reports, and running it early morning shows none yet.
 delete from public.queue_status where reported_at >= now() - interval '24 hours';
 
 insert into public.queue_status (location_id, status, wait_min, wait_max, note, reported_at, updated_by)
-select l.id, q.status, q.wait_min, q.wait_max, q.note, now() - q.ago, null
+select l.id, q.status, q.wait_min, q.wait_max, q.note,
+       (c.today + q.at_time) at time zone 'Pacific/Port_Moresby', null
 from public.mess_locations l
+cross join seed_clock c
 cross join (values
-  ('busy',     20, 30, 'Lunch rush, line past the door', interval '5 minutes'),
-  ('moderate', 10, 15, null,                             interval '35 minutes'),
-  ('quiet',     0,  5, null,                             interval '75 minutes'),
-  ('moderate', 10, 15, null,                             interval '4 hours'),
-  ('busy',     25, 35, 'Breakfast rush',                 interval '5 hours')
-) as q(status, wait_min, wait_max, note, ago)
-where l.name = 'Main Mess';
+  (time '06:40', 'quiet',     0,  5, null),
+  (time '07:10', 'busy',     15, 20, 'Breakfast rush'),
+  (time '08:05', 'quiet',     0,  5, null),
+  (time '11:40', 'moderate', 10, 15, null),
+  (time '12:10', 'busy',     20, 30, 'Lunch rush, line past the door'),
+  (time '13:00', 'moderate',  5, 10, null),
+  (time '13:20', 'quiet',     0,  5, null),
+  (time '17:40', 'moderate', 10, 15, null),
+  (time '18:15', 'busy',     20, 25, 'Dinner rush'),
+  (time '19:10', 'quiet',     0,  5, null)
+) as q(at_time, status, wait_min, wait_max, note)
+where l.name = 'Main Mess'
+  and q.at_time <= c.time_now;
 
 drop table seed_clock, weekly_menu, serving_times;
 
