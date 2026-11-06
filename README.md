@@ -124,6 +124,10 @@ _Screenshots from a real device are added in `docs/screenshots/`._
 - Offline mode is read-only. Menus, the queue and the mess location come from the last successful load, and creating or editing feedback needs a connection.
 - Reminders use the default serving times (06:30, 11:30, 17:30) until today's meals have loaded.
 
+## Open-source libraries
+
+Built with Expo and React Native, Expo Router, Supabase JS, TanStack Query, React Hook Form, Zod, AsyncStorage, NetInfo, expo-location, react-native-maps, expo-notifications and Ionicons (@expo/vector-icons). Thanks to their maintainers.
+
 ## AI assistance
 
 Claude (Anthropic) was used to review the M1 plan against the project brief and to scaffold the initial project: folder structure, Supabase schema and RLS policies, auth flow and first screens. I have reviewed every file and can explain how each part works. Claude was also used to help with the Expo SDK 57 upgrade, EAS build fixes, the offline cache, meal reminders, error messages, the seed data and the technical report draft. I reviewed, tested and can explain every change.
