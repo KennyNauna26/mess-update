@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { AppButton } from '@/components/AppButton';
@@ -31,7 +31,7 @@ export default function FeedbackFormScreen() {
   const updateMutation = useUpdateFeedback();
   const [formError, setFormError] = useState<string | null>(null);
 
-  const { control, handleSubmit, reset, watch } = useForm<FeedbackValues>({
+  const { control, handleSubmit, reset } = useForm<FeedbackValues>({
     resolver: zodResolver(feedbackSchema),
     defaultValues: { rating: 0, comment: '' },
   });
@@ -44,7 +44,7 @@ export default function FeedbackFormScreen() {
   }, [existing.data, reset]);
 
   const isSaving = createMutation.isPending || updateMutation.isPending;
-  const commentLength = watch('comment').length;
+  const commentLength = useWatch({ control, name: 'comment' }).length;
 
   const onSubmit = handleSubmit((values) => {
     setFormError(null);

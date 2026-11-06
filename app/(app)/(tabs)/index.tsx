@@ -51,7 +51,7 @@ export default function HomeScreen() {
         <Text style={typography.title}>{firstName}</Text>
       </View>
 
-      <Text style={typography.heading}>Today's meal</Text>
+      <Text style={typography.heading}>Today’s meal</Text>
       {meals.isPending ? (
         <LoadingState message="Loading today's menu…" />
       ) : meals.isError ? (

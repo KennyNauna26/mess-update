@@ -19,7 +19,7 @@ export function OfflineBanner() {
       accessibilityLiveRegion="polite"
     >
       <Ionicons name="cloud-offline-outline" size={16} color={colors.warning} />
-      <Text style={styles.text}>You're offline — showing the last saved menu and queue.</Text>
+      <Text style={styles.text}>You’re offline — showing the last saved menu and queue.</Text>
     </View>
   );
 }

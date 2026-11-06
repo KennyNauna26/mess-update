@@ -83,7 +83,7 @@ export default function MapScreen() {
             <View style={styles.notice}>
               <Ionicons name="location-outline" size={18} color={colors.warning} />
               <Text style={[typography.caption, styles.noticeText]}>
-                Location is off, so we can't show how far you are. You can still see the mess on the
+                Location is off, so we can’t show how far you are. You can still see the mess on the
                 map.
               </Text>
             </View>

@@ -74,7 +74,7 @@ export default function LoginScreen() {
         Forgot password?
       </Link>
       <View style={styles.footer}>
-        <Text style={typography.body}>Don't have an account? </Text>
+        <Text style={typography.body}>Don’t have an account? </Text>
         <Link href="/register" style={styles.linkInline}>
           Register
         </Link>

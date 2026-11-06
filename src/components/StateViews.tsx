@@ -56,7 +56,7 @@ export function ErrorState({ message, onRetry, retrying = false }: ErrorStatePro
   return (
     <View style={styles.center}>
       <Ionicons name="cloud-offline-outline" size={40} color={colors.danger} />
-      <Text style={styles.title}>Couldn't load this</Text>
+      <Text style={styles.title}>Couldn’t load this</Text>
       <Text style={styles.message}>{message}</Text>
       {onRetry ? (
         <View style={styles.action}>

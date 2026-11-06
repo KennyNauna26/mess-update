@@ -78,7 +78,7 @@ export function MealRemindersCard() {
 
       {prefs && usingDefaultTimes ? (
         <Text style={typography.caption}>
-          Today's menu isn't posted yet, so reminders use the usual serving times.
+          Today’s menu isn’t posted yet, so reminders use the usual serving times.
         </Text>
       ) : null}
     </Card>

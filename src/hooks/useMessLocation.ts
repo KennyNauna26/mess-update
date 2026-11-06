@@ -26,32 +26,42 @@ type UserLocationState =
   | { status: 'error'; message: string }
   | { status: 'success'; coords: Coordinates };
 
-/** Asks for permission, then reads the device position. Exposes retry for the error state. */
+/** Asks for permission, then reads the device position. Returns the new state; sets nothing. */
+async function readUserLocation(): Promise<UserLocationState> {
+  try {
+    const permission = await requestLocationPermission();
+    if (permission === 'denied') return { status: 'denied' };
+    const coords = await getCurrentCoordinates();
+    return { status: 'success', coords };
+  } catch (error) {
+    const message =
+      error instanceof Error && error.message.includes('timed out')
+        ? 'Could not get your location. Move near a window or turn on GPS, then retry.'
+        : toFriendlyMessage(error);
+    return { status: 'error', message };
+  }
+}
+
+/** Reads the device position on mount and again on every retry. */
 export function useUserLocation() {
   const [state, setState] = useState<UserLocationState>({ status: 'loading' });
-
-  const load = useCallback(async () => {
-    setState({ status: 'loading' });
-    try {
-      const permission = await requestLocationPermission();
-      if (permission === 'denied') {
-        setState({ status: 'denied' });
-        return;
-      }
-      const coords = await getCurrentCoordinates();
-      setState({ status: 'success', coords });
-    } catch (error) {
-      const message =
-        error instanceof Error && error.message.includes('timed out')
-          ? 'Could not get your location. Move near a window or turn on GPS, then retry.'
-          : toFriendlyMessage(error);
-      setState({ status: 'error', message });
-    }
-  }, []);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    load();
-  }, [load]);
+    let active = true;
+    // State is set only in the callback, after the GPS reply arrives.
+    readUserLocation().then((next) => {
+      if (active) setState(next);
+    });
+    return () => {
+      active = false; // ignore a late reply after the screen closes
+    };
+  }, [attempt]);
 
-  return { state, retry: load };
+  const retry = useCallback(() => {
+    setState({ status: 'loading' });
+    setAttempt((n) => n + 1);
+  }, []);
+
+  return { state, retry };
 }

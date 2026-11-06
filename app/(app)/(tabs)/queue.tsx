@@ -53,7 +53,7 @@ export default function QueueScreen() {
         />
       )}
 
-      <Text style={typography.heading}>Today's updates</Text>
+      <Text style={typography.heading}>Today’s updates</Text>
       {history.isError ? (
         <ErrorState message={toFriendlyMessage(history.error)} onRetry={() => history.refetch()} />
       ) : history.data && history.data.length > 0 ? (

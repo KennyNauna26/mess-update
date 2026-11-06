@@ -2,10 +2,10 @@
 
 **Check the food. Check the queue. Then go.**
 
-Mess Update is an Android app for university students. It shows the campus mess's daily menu, the current queue status with an estimated wait, and where the mess is on a map, so students can decide when to go before they walk there. Students can rate meals and manage their own feedback, and they get meal-time reminders (M4).
+Mess Update is an Android app for university students. It shows the campus mess's daily menu, the current queue status with an estimated wait, and where the mess is on a map, so students can decide when to go before they walk there. Students can rate meals and manage their own feedback, and they can turn on daily meal-time reminders. Menus and the queue stay readable offline from the last successful load.
 
 - **Student:** Kenny Nauna — _student number: [add]_
-- **Unit:** IS323 Mobile App Development, PNG University of Technology
+- **Unit:** IS325 Mobile App Development, PNG University of Technology
 
 ## Tech stack
 
@@ -22,8 +22,8 @@ npm install
 npx expo install --fix   # aligns every Expo package with the installed SDK
 ```
 
-> The project starts on **Expo SDK 54**. If the class uses a different SDK, run
-> `npx expo install expo@^<version>` and then `npx expo install --fix`.
+> The project uses **Expo SDK 57**. Expo Go on the phone must support SDK 57; otherwise
+> install the APK from the EAS build instead.
 
 ### 2. Create the Supabase project
 
@@ -73,7 +73,7 @@ where id = (select id from auth.users where email = 'you@example.com');
 | Supabase Auth + Postgres | Accounts, password reset, meals, queue reports, feedback (RLS on every table) |
 | expo-location (Group A) | Device position for distance to the mess |
 | react-native-maps / Google Maps (Group A) | Map with mess markers from the `mess_locations` table |
-| expo-notifications (Group B) | Local scheduled meal reminders (M4) |
+| expo-notifications (Group B) | Daily local reminders 15 minutes before each meal (Profile → Meal reminders) |
 
 ## Building the APK and AAB
 
@@ -112,15 +112,18 @@ supabase/            schema.sql (tables + RLS), seed.sql (sample data)
 
 ## Screenshots
 
-_Add screenshots from a real device here (M4)._
+_Screenshots from a real device are added in `docs/screenshots/`._
 
 ## Known limitations
 
 - Queue status is reported by the mess admin; the app does not count people. Every report shows when it was made, and reports older than an hour are flagged.
 - Admins use the Supabase dashboard; there are no in-app admin screens in v1.
 - The mess coordinates in `seed.sql` are approximate and must be replaced with the real location.
-- Meal reminders and offline caching are planned for M4.
+- The Supabase free plan pauses a project after 7 days without activity. If the app shows a connection error, resume the project in the Supabase dashboard.
+- The Google Maps key is supplied only through EAS environment variables. Without it, the map can render blank, but the distance and the mess details still show.
+- Offline mode is read-only. Menus, the queue and the mess location come from the last successful load, and creating or editing feedback needs a connection.
+- Reminders use the default serving times (06:30, 11:30, 17:30) until today's meals have loaded.
 
 ## AI assistance
 
-Claude (Anthropic) was used to review the M1 plan against the project brief and to scaffold the initial project: folder structure, Supabase schema and RLS policies, auth flow and first screens. I have reviewed every file and can explain how each part works. Later AI use will be listed here as the project continues.
+Claude (Anthropic) was used to review the M1 plan against the project brief and to scaffold the initial project: folder structure, Supabase schema and RLS policies, auth flow and first screens. I have reviewed every file and can explain how each part works. Claude was also used to help with the Expo SDK 57 upgrade, EAS build fixes, the offline cache, meal reminders, error messages, the seed data and the technical report draft. I reviewed, tested and can explain every change.

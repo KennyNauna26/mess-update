@@ -53,7 +53,7 @@ export default function MenuScreen() {
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
       <View style={styles.header}>
-        <Text style={typography.title}>Today's menu</Text>
+        <Text style={typography.title}>Today’s menu</Text>
         <Text style={typography.caption}>{formatDate(localDateISO())}</Text>
       </View>
       {body}
