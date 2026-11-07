@@ -12,7 +12,6 @@ Mess Update is an Android app for university students. It shows the campus mess'
 
 | Item | Link / ID |
 | --- | --- |
-| Demo video (5–7 min, installed APK) | _[add Google Drive link]_ |
 | Technical report (PDF) | [`docs/Mess-Update-Technical-Report.pdf`](docs/Mess-Update-Technical-Report.pdf) |
 | APK — preview profile | Download from the [v1.0 release](https://github.com/KennyNauna26/mess-update/releases/tag/v1.0) · EAS build `58c49232-ae51-45a0-b8e7-6ed1228c559e` |
 | AAB — production profile | Download from the [v1.0 release](https://github.com/KennyNauna26/mess-update/releases/tag/v1.0) · EAS build `4abeeb27-808a-441b-91a5-11db80588dba` |
@@ -123,7 +122,7 @@ supabase/            schema.sql (tables + RLS), seed.sql (sample data)
 
 ## Screenshots
 
-_Screenshots from a real device are added in `docs/screenshots/`._
+_Screenshot gallery to be added._
 
 ## Known limitations
 
